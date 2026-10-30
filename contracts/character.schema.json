@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "character.schema.json",
+  "title": "Window Pet Character",
+  "description": "契约 v1 的角色档案格式",
+  "type": "object",
+  "required": ["id", "contract_version", "rig", "persona", "knowledge", "idle_lines"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]+$"
+    },
+    "contract_version": {
+      "type": "string"
+    },
+    "rig": {
+      "type": "object",
+      "required": ["parts"],
+      "additionalProperties": false,
+      "properties": {
+        "parts": {
+          "type": "object",
+          "required": ["head", "body"],
+          "additionalProperties": false,
+          "properties": {
+            "head": {"$ref": "#/$defs/part"},
+            "body": {"$ref": "#/$defs/part"},
+            "arm_l": {"$ref": "#/$defs/part"},
+            "arm_r": {"$ref": "#/$defs/part"},
+            "leg_l": {"$ref": "#/$defs/part"},
+            "leg_r": {"$ref": "#/$defs/part"},
+            "eye_l": {"$ref": "#/$defs/part"},
+            "eye_r": {"$ref": "#/$defs/part"},
+            "mouth": {"$ref": "#/$defs/part"}
+          }
+        }
+      }
+    },
+    "persona": {
+      "type": "object",
+      "required": ["name", "setting"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "setting": {"type": "string", "minLength": 1}
+      }
+    },
+    "knowledge": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["key", "value"],
+        "additionalProperties": false,
+        "properties": {
+          "key": {"type": "string", "minLength": 1},
+          "value": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "idle_lines": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["text", "action", "weight"],
+        "additionalProperties": false,
+        "properties": {
+          "text": {"type": "string", "minLength": 1},
+          "action": {"type": "string", "minLength": 1},
+          "weight": {"type": "number", "exclusiveMinimum": 0}
+        }
+      }
+    }
+  },
+  "$defs": {
+    "part": {
+      "type": "object",
+      "required": ["file", "pivot"],
+      "additionalProperties": false,
+      "properties": {
+        "file": {"type": "string", "minLength": 1},
+        "pivot": {
+          "type": "array",
+          "items": {"type": "number"},
+          "minItems": 2,
+          "maxItems": 2
+        }
+      }
+    }
+  }
+}

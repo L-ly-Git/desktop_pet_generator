@@ -1,0 +1,98 @@
+{
+  "id": "photo12",
+  "contract_version": "1.0",
+  "rig": {
+    "parts": {
+      "head": {
+        "file": "parts/head.png",
+        "pivot": [
+          255,
+          136
+        ]
+      },
+      "body": {
+        "file": "parts/body.png",
+        "pivot": [
+          257,
+          223
+        ]
+      },
+      "arm_l": {
+        "file": "parts/arm_l.png",
+        "pivot": [
+          226,
+          162
+        ]
+      },
+      "arm_r": {
+        "file": "parts/arm_r.png",
+        "pivot": [
+          284,
+          160
+        ]
+      },
+      "leg_l": {
+        "file": "parts/leg_l.png",
+        "pivot": [
+          222,
+          297
+        ]
+      },
+      "leg_r": {
+        "file": "parts/leg_r.png",
+        "pivot": [
+          280,
+          311
+        ]
+      },
+      "eye_l": {
+        "file": "parts/eye_l.png",
+        "pivot": [
+          233,
+          85
+        ]
+      },
+      "eye_r": {
+        "file": "parts/eye_r.png",
+        "pivot": [
+          270,
+          88
+        ]
+      },
+      "mouth": {
+        "file": "parts/mouth.png",
+        "pivot": [
+          252,
+          114
+        ]
+      }
+    }
+  },
+  "persona": {
+    "name": "小美2号",
+    "setting": "由照片生成的 Q 版桌宠。"
+  },
+  "knowledge": [
+    {
+      "key": "source",
+      "value": "D:\\Python\\item\\WindowPet\\Window_Pet_Generator\\photo_cartoon_instance\\apose_photo12\\rgba_seed777.png"
+    }
+  ],
+  "idle_lines": [
+    {
+      "text": "你好呀！",
+      "action": "wave",
+      "weight": 2.0
+    },
+    {
+      "text": "嗯……发会儿呆。",
+      "action": "nod",
+      "weight": 2.0
+    },
+    {
+      "text": "哈欠……",
+      "action": "yawn",
+      "weight": 1.0
+    }
+  ]
+}

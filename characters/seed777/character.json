@@ -1,0 +1,103 @@
+{
+  "id": "calib777",
+  "contract_version": "1.0",
+  "rig": {
+    "parts": {
+      "head": {
+        "file": "parts/head.png",
+        "pivot": [
+          269,
+          141
+        ]
+      },
+      "body": {
+        "file": "parts/body.png",
+        "pivot": [
+          267,
+          193
+        ]
+      },
+      "arm_l": {
+        "file": "parts/arm_l.png",
+        "pivot": [
+          185,
+          151
+        ]
+      },
+      "arm_r": {
+        "file": "parts/arm_r.png",
+        "pivot": [
+          314,
+          153
+        ]
+      },
+      "leg_l": {
+        "file": "parts/leg_l.png",
+        "pivot": [
+          228,
+          246
+        ]
+      },
+      "leg_r": {
+        "file": "parts/leg_r.png",
+        "pivot": [
+          305,
+          244
+        ]
+      },
+      "eye_l": {
+        "file": "parts/eye_l.png",
+        "pivot": [
+          247,
+          86
+        ]
+      },
+      "eye_r": {
+        "file": "parts/eye_r.png",
+        "pivot": [
+          285,
+          86
+        ]
+      },
+      "mouth": {
+        "file": "parts/mouth.png",
+        "pivot": [
+          267,
+          113
+        ]
+      }
+    }
+  },
+  "persona": {
+    "name": "小美（残疾）",
+    "setting": "由照片生成的 Q 版桌宠。"
+  },
+  "knowledge": [
+    {
+      "key": "source",
+      "value": "photo_cartoon_instance\\apose_chibi\\rgba_seed777.png"
+    }
+  ],
+  "idle_lines": [
+    {
+      "text": "你好呀！",
+      "action": "wave",
+      "weight": 2.0
+    },
+    {
+      "text": "嗯……发会儿呆。",
+      "action": "nod",
+      "weight": 2.0
+    },
+    {
+      "text": "哈欠……",
+      "action": "yawn",
+      "weight": 1.0
+    },
+    {
+      "text": "好久不见",
+      "action": "blink",
+      "weight": 1.0
+    }
+  ]
+}

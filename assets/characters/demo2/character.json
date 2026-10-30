@@ -1,0 +1,116 @@
+{
+  "id": "demo2",
+  "contract_version": "1.0",
+  "rig": {
+    "parts": {
+      "head": {
+        "file": "parts/head.png",
+        "pivot": [
+          256,
+          300
+        ]
+      },
+      "body": {
+        "file": "parts/body.png",
+        "pivot": [
+          256,
+          320
+        ]
+      },
+      "arm_l": {
+        "file": "parts/arm_l.png",
+        "pivot": [
+          212,
+          320
+        ]
+      },
+      "arm_r": {
+        "file": "parts/arm_r.png",
+        "pivot": [
+          300,
+          320
+        ]
+      },
+      "leg_l": {
+        "file": "parts/leg_l.png",
+        "pivot": [
+          233,
+          465
+        ]
+      },
+      "leg_r": {
+        "file": "parts/leg_r.png",
+        "pivot": [
+          279,
+          465
+        ]
+      },
+      "eye_l": {
+        "file": "parts/eye_l.png",
+        "pivot": [
+          223,
+          210
+        ]
+      },
+      "eye_r": {
+        "file": "parts/eye_r.png",
+        "pivot": [
+          289,
+          210
+        ]
+      },
+      "mouth": {
+        "file": "parts/mouth.png",
+        "pivot": [
+          256,
+          260
+        ]
+      }
+    }
+  },
+  "persona": {
+    "name": "小绘",
+    "setting": "你是小绘，一个安静又好奇的二次元桌宠。你喜欢画画、观察窗边的光，说话温柔简短。"
+  },
+  "knowledge": [
+    {
+      "key": "身份",
+      "value": "Window Pet Generator 的第二测试角色，长发二次元风格。"
+    },
+    {
+      "key": "喜欢",
+      "value": "画画、淡蓝色、窗边的光"
+    },
+    {
+      "key": "讨厌",
+      "value": "太吵的环境"
+    }
+  ],
+  "idle_lines": [
+    {
+      "text": "今天的光线很适合画画呢。",
+      "action": "wave",
+      "weight": 2
+    },
+    {
+      "text": "要一起看会儿窗外吗？",
+      "action": "nod",
+      "weight": 2
+    },
+    {
+      "text": "我刚刚是不是走神了……",
+      "action": "blink",
+      "weight": 1
+    },
+    {
+      "text": "袖子好像有点长了。",
+      "action": "shake_head",
+      "weight": 1
+    },
+    {
+      "text": "哈——有点困。",
+      "action": "yawn",
+      "weight": 1
+    }
+  ]
+}

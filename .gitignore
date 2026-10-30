@@ -1,0 +1,40 @@
+# ---------- Python ----------
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# ---------- 构建产物（仅根目录） ----------
+/build/
+/dist/
+
+# ---------- IDE ----------
+.idea/
+.vscode/
+
+# ---------- 个人/生成数据（仅根目录） ----------
+/photo_cartoon_instance/
+/artifacts/
+history.json
+memory.json
+
+# ---------- 大模型（跳过；需要的模型见 docs/STEP2_MODELS.md 或 README） ----------
+/models/matting/
+/models/human_parsing/
+/models/diffusion/
+/models/uniface/
+/models/animeganv2/
+/models/_sources/
+
+# mobilesam 里的临时测试图（模型本体保留提交）
+models/mobilesam/test_sam_overlay.png
+models/mobilesam/_head_mask.png
+models/mobilesam/_test_mask.png
+
+# ---------- 密钥与个人文件 ----------
+runtime/chat_config.json
+*.docx
+
+
+

@@ -1,0 +1,7 @@
+PyQt5==5.15.11
+Pillow>=11.0
+pywin32>=306
+requests>=2.31
+numpy>=2.0
+opencv-python>=4.8
+onnxruntime>=1.17

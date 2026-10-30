@@ -1,0 +1,103 @@
+{
+  "contract_version": "1.0",
+  "description": "Window Pet Generator 共享 cut-out 契约 v1",
+  "canvas": {
+    "width": 512,
+    "height": 512,
+    "coordinate_system": "top-left",
+    "x_axis": "right",
+    "y_axis": "down",
+    "screen_anchor": "bottom-center",
+    "anchor_point": [256, 512]
+  },
+  "parts": {
+    "head": {
+      "required": true,
+      "parent": "body",
+      "z": 3,
+      "default_pivot": [256, 180],
+      "description": "头部；v1 中头发烘焙在 head.png 内"
+    },
+    "body": {
+      "required": true,
+      "parent": "root",
+      "z": 1,
+      "default_pivot": [256, 320],
+      "description": "躯干"
+    },
+    "arm_l": {
+      "required": false,
+      "parent": "body",
+      "z": 0,
+      "default_pivot": [200, 300],
+      "description": "左臂（画面左侧）"
+    },
+    "arm_r": {
+      "required": false,
+      "parent": "body",
+      "z": 0,
+      "default_pivot": [312, 300],
+      "description": "右臂（画面右侧）"
+    },
+    "leg_l": {
+      "required": false,
+      "parent": "root",
+      "z": -1,
+      "default_pivot": [230, 420],
+      "description": "左腿（画面左侧）"
+    },
+    "leg_r": {
+      "required": false,
+      "parent": "root",
+      "z": -1,
+      "default_pivot": [282, 420],
+      "description": "右腿（画面右侧）"
+    },
+    "eye_l": {
+      "required": false,
+      "parent": "head",
+      "z": 4,
+      "default_pivot": [230, 200],
+      "description": "左眼"
+    },
+    "eye_r": {
+      "required": false,
+      "parent": "head",
+      "z": 4,
+      "default_pivot": [282, 200],
+      "description": "右眼"
+    },
+    "mouth": {
+      "required": false,
+      "parent": "head",
+      "z": 4,
+      "default_pivot": [256, 240],
+      "description": "嘴"
+    }
+  },
+  "virtual_nodes": {
+    "root": {
+      "parent": null,
+      "description": "整只桌宠的虚拟根节点；锚点为画布底部中心，用于整体位移、旋转、缩放"
+    }
+  },
+  "channels": {
+    "tx": {"unit": "px", "default": 0.0, "description": "水平平移，正数向右"},
+    "ty": {"unit": "px", "default": 0.0, "description": "垂直平移，正数向下"},
+    "rot": {"unit": "deg", "default": 0.0, "description": "绕枢轴旋转；正数在屏幕上表现为顺时针"},
+    "sx": {"unit": "ratio", "default": 1.0, "minimum": 0.0, "description": "水平缩放"},
+    "sy": {"unit": "ratio", "default": 1.0, "minimum": 0.0, "description": "垂直缩放"}
+  },
+  "action": {
+    "duration_unit": "s",
+    "easing": ["linear", "ease_in", "ease_out", "ease_in_out", "step"],
+    "allowed_targets": ["root", "head", "body", "arm_l", "arm_r", "leg_l", "leg_r", "eye_l", "eye_r", "mouth"]
+  },
+  "notes": [
+    "所有部件图片均为 512x512 全画布透明 PNG，叠在一起构成完整角色。",
+    "部件缺失时运行时忽略对应动作通道；head 和 body 必须存在。",
+    "v1 不单列 hair，头发烘焙进 head.png；后续版本可增加可选 hair 部件。",
+    "动作与角色解耦：同一套动作 JSON 可驱动任何符合本契约的角色。",
+    "default_pivot 只是参考值；每个角色应在 character.json 中提供自己的 pivot。"
+  ]
+}

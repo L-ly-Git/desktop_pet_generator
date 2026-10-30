@@ -1,0 +1,116 @@
+{
+  "id": "demo",
+  "contract_version": "1.0",
+  "rig": {
+    "parts": {
+      "head": {
+        "file": "parts/head.png",
+        "pivot": [
+          256,
+          276
+        ]
+      },
+      "body": {
+        "file": "parts/body.png",
+        "pivot": [
+          256,
+          310
+        ]
+      },
+      "arm_l": {
+        "file": "parts/arm_l.png",
+        "pivot": [
+          200,
+          300
+        ]
+      },
+      "arm_r": {
+        "file": "parts/arm_r.png",
+        "pivot": [
+          312,
+          300
+        ]
+      },
+      "leg_l": {
+        "file": "parts/leg_l.png",
+        "pivot": [
+          230,
+          420
+        ]
+      },
+      "leg_r": {
+        "file": "parts/leg_r.png",
+        "pivot": [
+          282,
+          420
+        ]
+      },
+      "eye_l": {
+        "file": "parts/eye_l.png",
+        "pivot": [
+          230,
+          200
+        ]
+      },
+      "eye_r": {
+        "file": "parts/eye_r.png",
+        "pivot": [
+          282,
+          200
+        ]
+      },
+      "mouth": {
+        "file": "parts/mouth.png",
+        "pivot": [
+          256,
+          230
+        ]
+      }
+    }
+  },
+  "persona": {
+    "name": "小占位",
+    "setting": "你是小占位，一个用于测试契约与动作系统的桌宠角色。你性格活泼、说话简短，喜欢陪人写代码。"
+  },
+  "knowledge": [
+    {
+      "key": "身份",
+      "value": "Window Pet Generator 的占位测试角色"
+    },
+    {
+      "key": "喜欢",
+      "value": "被拖动到屏幕各处"
+    },
+    {
+      "key": "口头禅",
+      "value": "今天也要一起写代码吗？"
+    }
+  ],
+  "idle_lines": [
+    {
+      "text": "今天也要一起写代码吗？",
+      "action": "wave",
+      "weight": 2
+    },
+    {
+      "text": "呼……发会儿呆。",
+      "action": "nod",
+      "weight": 2
+    },
+    {
+      "text": "我刚刚是不是眨眼了？",
+      "action": "blink",
+      "weight": 1
+    },
+    {
+      "text": "伸个懒腰～",
+      "action": "yawn",
+      "weight": 1
+    },
+    {
+      "text": "别一直盯着屏幕啦。",
+      "action": "shake_head",
+      "weight": 1
+    }
+  ]
+}
