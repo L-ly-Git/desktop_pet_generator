@@ -21,9 +21,9 @@ history.json
 memory.json
 
 # ---------- 大模型（跳过；需要的模型见 docs/STEP2_MODELS.md 或 README） ----------
-/models/matting/
-/models/human_parsing/
+# 以下两个大模型通过 Git LFS 上传（不要直接 git 提交）
 /models/diffusion/
+/models/human_parsing/segformer_b5/
 /models/uniface/parsing_resnet18.onnx
 /models/uniface/modnet_photographic.onnx
 /models/animeganv2/
