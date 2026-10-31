@@ -15,6 +15,9 @@ datas = [
     (str(ROOT / "models" / "matting"), "models/matting"),
     (str(ROOT / "models" / "mobilesam"), "models/mobilesam"),
     (str(ROOT / "models" / "anime_face_seg"), "models/anime_face_seg"),
+    # 真人照片分层（不卡通化）：SegFormer 人体解析 + SCRFD 人脸检测
+    (str(ROOT / "models" / "human_parsing" / "segformer_b5.onnx"), "models/human_parsing"),
+    (str(ROOT / "models" / "uniface" / "scrfd_500m.onnx"), "models/uniface"),
 ]
 
 a = Analysis(
@@ -29,6 +32,8 @@ a = Analysis(
     excludes=[
         "torch", "torchvision", "torchaudio",
         "matplotlib", "scipy", "pandas", "IPython", "jupyter",
+        # 真人眼嘴已改用轻量 scrfd_onnx（不依赖 uniface）；auto 性别回退默认女
+        "uniface", "skimage", "sklearn",
     ],
     noarchive=False,
 )

@@ -294,8 +294,8 @@ def main(argv=None):
     ap.add_argument("--character-id", default="seed777")
     ap.add_argument("--name", default="Seed777")
     ap.add_argument("--fit-ratio", type=float, default=0.94)
-    ap.add_argument("--parser", choices=["sam", "segformer", "color"], default="sam",
-                    help="自动分层方法: sam=SAM提示式+几何(默认) / segformer=人体解析 / color=颜色启发式")
+    ap.add_argument("--parser", choices=["sam", "segformer", "color", "real"], default="sam",
+                    help="自动分层: sam=SAM提示式+几何(默认,Q版) / segformer=人体解析 / real=真人照片(SegFormer+真人眼嘴) / color=颜色启发式")
     ap.add_argument("--no-validate", action="store_true")
     args = ap.parse_args(argv)
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -320,6 +320,12 @@ def main(argv=None):
             parse = parse_parts(rgb)
             labels, parts, metrics = build_labels_parser(foreground, parse, eye_l, eye_r, mouth)
             print("  使用人体解析(SegFormer)分层")
+        elif args.parser == "real":
+            from tools.step2.real_face import infer_face_real
+            parse = parse_parts(rgb)
+            eye_l, eye_r, mouth = infer_face_real(rgb, foreground)
+            labels, parts, metrics = build_labels_parser(foreground, parse, eye_l, eye_r, mouth)
+            print("  使用真人模式(SegFormer + 真人眼嘴)分层")
         else:
             raise ValueError("color")
     except Exception as e:

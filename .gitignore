@@ -15,6 +15,7 @@ venv/
 
 # ---------- 个人/生成数据（仅根目录） ----------
 /photo_cartoon_instance/
+/characters/
 /artifacts/
 history.json
 memory.json
@@ -23,7 +24,8 @@ memory.json
 /models/matting/
 /models/human_parsing/
 /models/diffusion/
-/models/uniface/
+/models/uniface/parsing_resnet18.onnx
+/models/uniface/modnet_photographic.onnx
 /models/animeganv2/
 /models/_sources/
 

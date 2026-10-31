@@ -72,7 +72,11 @@ def detect_gender(photo: Path) -> str:
     detector = load_detector()
     parser = load_parser()
     matting = load_matting()
-    bgr = cv2.imread(str(photo), cv2.IMREAD_COLOR)
+    try:
+        from tools.step2.matte_isnet import imread_unicode
+        bgr = imread_unicode(photo)
+    except Exception:  # noqa: BLE001
+        bgr = cv2.imread(str(photo), cv2.IMREAD_COLOR)
     analysis = extract_profile(bgr, detector, parser, matting, photo)
     hl = analysis.profile["hair_length"]
     if hl == "long":

@@ -56,8 +56,18 @@ def predict_alpha(image_bgr: np.ndarray) -> np.ndarray:
     return alpha
 
 
+def imread_unicode(path) -> np.ndarray | None:
+    """读图（支持中文/Unicode 路径）。cv2.imread 在 Windows 上读不了中文路径。"""
+    data = np.fromfile(str(path), dtype=np.uint8)
+    if data.size == 0:
+        return None
+    return cv2.imdecode(data, cv2.IMREAD_COLOR)
+
+
 def matte_file(rgb_path: Path, out_path: Path) -> Path:
-    bgr = cv2.imread(str(rgb_path), cv2.IMREAD_COLOR)
+    bgr = imread_unicode(rgb_path)
+    if bgr is None:
+        raise FileNotFoundError(f"无法读取图片(可能是中文路径或文件损坏): {rgb_path}")
     alpha = predict_alpha(bgr)
     rgba = cv2.cvtColor(bgr, cv2.COLOR_BGR2BGRA)
     rgba[..., 3] = alpha

@@ -2,7 +2,7 @@
   "id": "dance",
   "display_name": "快乐摇摆舞",
   "duration": 3.0,
-  "loop": true,
+  "loop": false,
   "easing": "ease_in_out",
   "tracks": {
     "body": {

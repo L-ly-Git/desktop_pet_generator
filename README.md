@@ -13,7 +13,8 @@
 |---|---|---|
 | 契约 | 512×512 画布、9 部件（head/body/arm_l/arm_r/leg_l/leg_r/eye_l/eye_r/mouth）、动作 schema | `contracts/` |
 | 运行时 | 透明桌宠窗口、cut-out 骨骼渲染、8 个动作、待机调度、气泡、点击穿透、拖拽/行走 | `runtime/app.py` |
-| 生成（2A） | 照片 → A-pose Q 版立绘（3 个 seed、相似度预设 A/B/C、性别） | 工作台「新建角色」或 `step2_pipeline.py` |
+| 生成（2A，卡通化） | 照片 → A-pose Q 版立绘（3 个 seed、相似度预设 A/B/C、性别，本地 ComfyUI） | 工作台「新建角色」或 `step2_pipeline.py` |
+| 不卡通化（真人照片） | 真人照片 → ISNet 抠图 → SegFormer + 真人眼嘴 分层（无需 ComfyUI/云端） | 工作台「新建角色」→ 后端选「不卡通化」 |
 | 自动分层（2B） | 立绘 → 9 部件（SAM 提示式分割 + 几何规则） | `split_general.py` |
 | 手动校准（2C） | 笔刷/套索/智能套索/枢轴 手动修正分层 | `calibrate_panel.py` |
 | 遮挡修复 | 补齐被上层遮住的下层部件，旋转不漏洞 | `occlusion.py` |
@@ -38,7 +39,7 @@ pip install -r requirements.txt
 python tools\studio.py          # 启动工作台
 ```
 
-> 仅“生成（照片→Q版）”需要额外准备本地 ComfyUI（见「常见问题」）。分层/配置/运行桌宠不需要 ComfyUI。
+> 仅“生成（照片→Q版，卡通化）”需要额外准备本地 ComfyUI（见「常见问题」）；「不卡通化（真实照片）」以及分层/配置/运行桌宠都不需要 ComfyUI。
 
 ---
 
@@ -56,7 +57,8 @@ python tools\studio.py          # 启动工作台
 
 ### 2. 新建角色（4 步向导）
 「新建角色…」→ 填参数 → 「开始生成」：
-1. **生成**：选照片、角色ID、名称、性别（女/男/auto）、相似度预设（A 基线 / B 增强相似·推荐 / C 最大相似）、后端（本地 ComfyUI / 云端待接入）；后台生成 3 个 seed，实时刷日志，完成后弹窗「已经生成」。
+1. **生成（卡通化）**：选照片、角色ID、名称、性别（女/男/auto）、相似度预设（A/B/C）、后端「本地 ComfyUI」；后台生成 3 个 seed，实时刷日志，完成后弹窗「已经生成」。
+    - **不卡通化（真实照片）**：后端下拉选「不卡通化（真实照片）」，性别/预设自动隐藏、按钮变为「开始抠图」；流程为 上传照片 → ISNet 抠图 → SegFormer + 真人眼嘴 分层 → 校准 → 入库。适合正面、全身、站立、手脚都可见的清晰照片。
 2. **选立绘**：点选 3 个 seed 缩略图之一。
 3. **自动分层**：点「对选中立绘自动分层」，结果写入 `characters/<id>` 并出现在角色库。
 4. **校准**：点「打开校准面板」手动微调。
@@ -82,7 +84,7 @@ python tools\studio.py          # 启动工作台
 # 完整流程：生成 + 自动分层
 .venv\Scripts\python.exe tools\step2\step2_pipeline.py --photo 03.jpg --character-id photo03 --name "角色03" --gender 女 --preset B --backend comfyui
 
-# 单独自动分层（默认 SAM；可选 segformer / color）
+# 单独自动分层（默认 SAM；可选 real 真人照片 / segformer / color）
 .venv\Scripts\python.exe tools\step2\split_general.py --input <rgba.png> --output-dir <dir> --character-id <id> --parser sam
 
 # 手动校准面板
@@ -191,6 +193,7 @@ Window_Pet_Generator/
 - 9 部件 cut-out 契约 + 8 个共享动作 + 运行时渲染
 - 照片 → A-pose Q 版立绘（本地 ComfyUI，3 seed，相似度预设 A/B/C，性别）
 - SAM 提示式 + 几何规则的自动分层（黑西装/长裙等案例可用）
+- 不卡通化（真实照片）：ISNet 抠图 + SegFormer 人体解析 + SCRFD 真人眼嘴定位，生成真人切块桌宠
 - 手动校准面板（笔刷/套索/智能套索/枢轴/网格/缩放平移/撤销）
 - 遮挡修复
 - 配置编辑（人设/知识库/待机台词/记忆）
@@ -222,6 +225,12 @@ Window_Pet_Generator/
 
 **Q：打包后 exe 双击没反应？**
 用 `build.bat` 或 `python build_exe.py` 重新打包；确认 `dist\WindowPetStudio\_internal\models\` 里模型完整。
+
+**Q：不卡通化分层缺胳膊/腿？**
+「不卡通化」用 SegFormer 做真人解析，只有照片里**看得见**的四肢才会被分出。请用正面、全身、站立、手脚都露出的清晰照片；半身/腿被遮的照片只能分出可见部分。
+
+**Q：不卡通化报“抠图失败”？**
+通常是照片路径含中文导致的读取问题（已修复）。若仍失败，确认照片可正常打开、且人物前景清晰。
 
 **Q：加动作后配置页没出现中文名？**
 确认动作 JSON 有 `display_name` 字段、且文件名与 `id` 一致；重启工作台/桌宠后再看。

@@ -129,6 +129,28 @@ class ProcessWorker(QtCore.QThread):
         self.finished_rc.emit(rc)
 
 
+class MatteWorker(QtCore.QThread):
+    """后台抠图（ISNet）-> 透明底 RGBA。"""
+    log = QtCore.pyqtSignal(str)
+    done = QtCore.pyqtSignal(object)  # Path | None
+
+    def __init__(self, photo: Path, out_rgba: Path, parent=None):
+        super().__init__(parent)
+        self.photo = photo
+        self.out_rgba = out_rgba
+
+    def run(self):
+        try:
+            from tools.step2.matte_isnet import matte_file
+            self.log.emit(f"抠图中: {self.photo.name}")
+            out = matte_file(self.photo, self.out_rgba)
+            self.log.emit(f"抠图完成: {out}")
+            self.done.emit(out)
+        except Exception as exc:  # noqa: BLE001
+            self.log.emit(f"抠图失败: {exc}")
+            self.done.emit(None)
+
+
 class GenerateWorker(QtCore.QThread):
     """后台跑生成后端（本地 ComfyUI / 云端）。"""
     log = QtCore.pyqtSignal(str)
@@ -300,6 +322,8 @@ class GenerateDialog(QtWidgets.QDialog):
         self.backend = QtWidgets.QComboBox()
         self.backend.addItem("本地 ComfyUI", "comfyui")
         self.backend.addItem("云端生成（待接入）", "cloud")
+        self.backend.addItem("不卡通化（真实照片）", "real")
+        self.backend.currentIndexChanged.connect(self._on_backend_changed)
         form.addRow("生成后端", self.backend)
         root.addLayout(form)
 
@@ -314,6 +338,7 @@ class GenerateDialog(QtWidgets.QDialog):
 
         # seed 预览
         gp = QtWidgets.QGroupBox("选择立绘")
+        self.seed_group_box = gp
         glay = QtWidgets.QHBoxLayout(gp)
         self.seed_radios: dict[int, QtWidgets.QRadioButton] = {}
         self.seed_group = QtWidgets.QButtonGroup(self)
@@ -348,6 +373,21 @@ class GenerateDialog(QtWidgets.QDialog):
         bottom.addWidget(self.exit_btn)
         root.addLayout(bottom)
 
+    def _on_backend_changed(self, _index: int):
+        is_real = self.backend.currentData() == "real"
+        self.gender.setEnabled(not is_real)
+        self.preset.setEnabled(not is_real)
+        self.seed_group_box.setVisible(not is_real)
+        self.gen_btn.setText("开始抠图（真实照片）" if is_real else "开始生成（3 个 seed）")
+
+    def _show_result_path(self, path):
+        pm = QtGui.QPixmap(str(path))
+        if pm.isNull():
+            self.preview.setText("预览加载失败")
+            return
+        pm = pm.scaled(self.preview.size(), QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)
+        self.preview.setPixmap(pm)
+
     def _pick_photo(self):
         path, _ = QtWidgets.QFileDialog.getOpenFileName(
             self, "选择照片", str(ROOT), "图片 (*.png *.jpg *.jpeg *.bmp)")
@@ -366,6 +406,17 @@ class GenerateDialog(QtWidgets.QDialog):
             QtWidgets.QMessageBox.warning(self, "生成", "请先选择有效的照片文件。")
             return
         cid = re.sub(r"[^A-Za-z0-9_-]+", "_", self.cid_edit.text()).strip("_") or "photo"
+        if self.backend.currentData() == "real":
+            self.log.clear()
+            self.results = []
+            self.gen_btn.setEnabled(False)
+            out_rgba = ROOT / "photo_cartoon_instance" / f"real_{cid}" / "rgba.png"
+            out_rgba.parent.mkdir(parents=True, exist_ok=True)
+            self.worker = MatteWorker(photo, out_rgba)
+            self.worker.log.connect(lambda msg: self.log.appendPlainText(msg))
+            self.worker.done.connect(self._on_matte)
+            self.worker.start()
+            return
         backend = get_backend(self.backend.currentData())
         ok, reason = backend.available()
         if not ok:
@@ -379,6 +430,19 @@ class GenerateDialog(QtWidgets.QDialog):
         self.worker.log.connect(lambda s: self.log.appendPlainText(s))
         self.worker.done.connect(self._on_generated)
         self.worker.start()
+
+    def _on_matte(self, path):
+        self.gen_btn.setEnabled(True)
+        if path is None or not Path(path).is_file():
+            self.log.appendPlainText("=== 抠图失败 ===")
+            self.preview.setText("（抠图失败）")
+            QtWidgets.QMessageBox.warning(self, "处理", "抠图失败，请换一张更清晰的正面照片。")
+            return
+        self.results = [path]
+        self.log.appendPlainText("=== 抠图完成（真实照片） ===")
+        self._show_result_path(path)
+        self.split_btn.setEnabled(True)
+        QtWidgets.QMessageBox.information(self, "处理", "抠图完成，请点「对选中立绘自动分层」继续。")
 
     def _on_generated(self, results):
         self.gen_btn.setEnabled(True)
@@ -424,20 +488,28 @@ class GenerateDialog(QtWidgets.QDialog):
         return self.seed_group.checkedId()
 
     def _split(self):
-        seed = self._selected_seed()
-        if seed is None or seed not in self.seed_radios or not self.results:
-            return
-        path = self.results[SEEDS.index(seed)]
+        is_real = self.backend.currentData() == "real"
+        if is_real:
+            if not self.results or self.results[0] is None:
+                QtWidgets.QMessageBox.warning(self, "分层", "没有可用的抠图结果。")
+                return
+            path = self.results[0]
+        else:
+            seed = self._selected_seed()
+            if seed is None or seed not in self.seed_radios or not self.results:
+                return
+            path = self.results[SEEDS.index(seed)]
         if path is None or not Path(path).is_file():
-            QtWidgets.QMessageBox.warning(self, "分层", "所选 seed 没有可用的立绘。")
+            QtWidgets.QMessageBox.warning(self, "分层", "所选立绘不存在。")
             return
         cid = re.sub(r"[^A-Za-z0-9_-]+", "_", self.cid_edit.text()).strip("_") or "photo"
         name = self.name_edit.text().strip() or "照片角色"
         self.split_dir = CHARACTERS_DIR / cid
         self.log.appendPlainText(f"=== 自动分层 -> {self.split_dir} ===")
         self.split_btn.setEnabled(False)
+        parser = "real" if is_real else "sam"
         split_args = ["--input", str(path), "--output-dir", str(self.split_dir),
-                      "--character-id", cid, "--name", name]
+                      "--character-id", cid, "--name", name, "--parser", parser]
         if is_frozen():
             split_args.append("--no-validate")
         self.pw = ProcessWorker(make_cmd(SPLIT_APP, split_args))
